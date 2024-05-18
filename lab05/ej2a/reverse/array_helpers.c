@@ -1,17 +1,20 @@
+#include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 void array_dump(int a[], unsigned int length) {
-    fprintf(stdout, "%u\n", length);
+    fprintf(stdout, "[");
     for (unsigned int i = 0u; i < length; ++i) {
-        fprintf(stdout, "%i", a[i]);
+        fprintf(stdout, "%d", a[i]);
         if (i < length - 1) {
-            fprintf(stdout, " ");
+            fprintf(stdout, ", ");
         } else {
-            fprintf(stdout, "\n");
+            fprintf(stdout, "]\n");
         }
     }
 }
+
 
 unsigned int array_from_file(int array[], unsigned int max_size, const char *filepath) {
     FILE *file = NULL;
@@ -40,7 +43,6 @@ unsigned int array_from_file(int array[], unsigned int max_size, const char *fil
         }
        ++i;
     }
-
     fclose(file);
     return (size);
 }
