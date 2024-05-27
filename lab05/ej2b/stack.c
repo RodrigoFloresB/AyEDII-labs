@@ -8,10 +8,18 @@ struct _s_stack {
     stack next;
 };
  
-stack stack_empty() {
-    stack res = NULL;
+// El primer elem en el primer nodo va a ser el largo de la pila.
 
-    return res;
+static bool invrep(stack s) {
+    return (s->next == NULL && s->elem == 0);
+}
+
+stack stack_empty() {
+    stack nodo= malloc(sizeof(struct _s_stack));
+    nodo->elem = 0; // stack vacio
+    nodo->next = NULL;
+
+    return nodo;
 }
 
 stack stack_push(stack s, stack_elem e) {
@@ -24,16 +32,19 @@ stack stack_push(stack s, stack_elem e) {
     }
 
     res->elem = e;
-    res->next = s;
+    res->next = s->next; // seria el primer elemento del stack
+    s->elem++; // incrementa el tamano del stack
+    s->next = res; // apunta al nuevo nodo
 
-    return res;
+    return s;
 }
 
 stack stack_pop(stack s) {
-    assert(s != NULL);
+    assert(!invrep(s));
 
-	stack res = s;
-	s = s->next;
+	stack res = s->next;
+	s = (s->next)->next;
+    s->elem--;
 	free(res);
 	res = NULL;	
 
@@ -41,24 +52,14 @@ stack stack_pop(stack s) {
 }
 
 unsigned int stack_size(stack s) {
-    unsigned int res = 0;
-    stack aux = s;
-
-    while (aux != NULL)
-    {
-        res++;
-        aux = aux->next;
-    }
-
-    aux = NULL;
-
-    return res;
+    
+    return s->elem;
 }
 
 stack_elem stack_top(stack s) {
-    assert(s != NULL);
+    assert(!invrep(s));
 
-    return s->elem;
+    return (s->next)->elem;
 }
 
 bool stack_is_empty(stack s) {
@@ -67,7 +68,7 @@ bool stack_is_empty(stack s) {
 }
 
 stack_elem *stack_to_array(stack s) {
-    stack aux = s;
+    stack aux = s->next;
     stack_elem *res = NULL;
     unsigned int length = stack_size(s);
 

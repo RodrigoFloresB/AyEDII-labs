@@ -6,8 +6,8 @@
 #define MAX_LENGTH 1820
 
 char *string_clone(const char *str, size_t length) {
-    char clon[MAX_LENGTH];
-    char *output=clon;
+    //char clon[MAX_LENGTH];
+    char *output= malloc((length + 1) * sizeof(char));
     for (size_t i=0; i<length;i++) {
         output[i] = str[i];
     }
@@ -71,3 +71,4 @@ int main(void) {
     return EXIT_SUCCESS;
 }
 
+// output no pedia memoria.

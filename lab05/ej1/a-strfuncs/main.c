@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #include "strfuncs.h"
+#include "strfuncs.h"
 
 
 int main(void) {

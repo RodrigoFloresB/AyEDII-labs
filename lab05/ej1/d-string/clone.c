@@ -6,11 +6,8 @@
 #define MAX_LENGTH 1820
 
 char *string_clone(const char *str) {
-    char *clone=NULL;
-    /*
-     * COMPLETAR
-     *
-     */
+    char *output = malloc(strlen(str) * sizeof(str));
+    strcpy(output, str); // Destino , origen
     return output;
 }
 
@@ -66,6 +63,8 @@ int main(void) {
     copy[5] = 'g';
     printf("Copia   :\n" ANSI_CYAN
            " %s\n", copy);
+
+    free(copy);
 
     return EXIT_SUCCESS;
 }

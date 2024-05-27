@@ -1,5 +1,8 @@
 {
     "editor.fontSize": 14,
     "editor.fontFamily": "Victor Mono",
-    "editor.fontLigatures": true
+    "editor.fontLigatures": true,
+    "files.associations": {
+        "stack.h": "c"
+    }
 }
