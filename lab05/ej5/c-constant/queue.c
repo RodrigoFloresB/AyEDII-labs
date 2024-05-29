@@ -7,7 +7,8 @@
 
 struct s_queue {
     unsigned int length;
-    struct s_node *first;
+    nodo last;  // apunta al ultimo nodo de la cola
+    nodo first; // apunta al primer nodo de la cola
 };
 
 struct s_node {
@@ -42,6 +43,7 @@ queue queue_empty(void) {
     queue q = malloc(sizeof(struct s_queue));
     q->length = 0u;
     q->first = NULL;
+    q->last = NULL;
 
     assert(invrep(q) && queue_is_empty(q));
     return q;
@@ -52,17 +54,10 @@ queue queue_enqueue(queue q, queue_elem e) {
     struct s_node *new_node = create_node(e);
     if (q->first==NULL) {
         q->first = new_node;
+        q->last = new_node;
     } else {
-
-        nodo aux_nodo = q->first;
-        
-        while (aux_nodo->next != NULL)
-        {
-            aux_nodo = aux_nodo->next;
-        }
-        
-        aux_nodo->next = new_node;
-        aux_nodo = NULL;
+        q->last->next = new_node;
+        q->last = new_node;
     }
 
     q->length++;
@@ -74,6 +69,7 @@ queue queue_enqueue(queue q, queue_elem e) {
 bool queue_is_empty(queue q) {
     assert(invrep(q));
     return q->first == NULL;
+    
 }
 
 queue_elem queue_first(queue q) {
@@ -82,18 +78,16 @@ queue_elem queue_first(queue q) {
 }
 unsigned int queue_size(queue q) {
     assert(invrep(q));
-    unsigned int size=0;
-    size = q->length;
     
-    return size;
+    return q->length;
 }
 
 queue queue_dequeue(queue q) {
     assert(invrep(q) && !queue_is_empty(q));
     struct s_node * killme=q->first;
     q->first = q->first->next;
-    killme = destroy_node(killme);
     q->length--;
+    killme = destroy_node(killme);
     assert(invrep(q));
     return q;
 
@@ -127,3 +121,33 @@ queue queue_destroy(queue q) {
     return q;
 }
 
+queue queue_disscard(queue q, unsigned int n) {
+    assert(queue_size(q) > n);
+    
+    nodo killme = NULL;
+    nodo aux_nodo = q->first;
+    unsigned int i = 0;
+
+    if (n == 0)
+    {
+        killme = q->first;
+        q->first = q->first->next;
+        free(killme);
+        killme = NULL;
+    } else {
+        while (i < n - 1)
+        {
+            aux_nodo = aux_nodo->next;
+
+            i++;
+        }
+
+        killme = aux_nodo->next;
+        aux_nodo->next = killme->next;
+        free(killme);
+        killme = NULL; 
+    }
+    
+
+    return q;
+}

@@ -6,6 +6,8 @@
 
 typedef struct s_queue * queue;
 
+typedef struct s_node * nodo;
+
 typedef int queue_elem;
 
 queue queue_empty(void);

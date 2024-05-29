@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 
+
 /**
 * @brief Stack type definition
 */
@@ -27,7 +28,7 @@ stack stack_empty();
 * @brief Inserts an element at the top of the stack
 * @param s A stack
 * @param e An element to push into the stack
-* @return The new stack with 'e' at the top
+* @return The new stack with 'elem' at the top
 */
 stack stack_push(stack s, stack_elem e);
 

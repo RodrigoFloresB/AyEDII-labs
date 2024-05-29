@@ -5,36 +5,42 @@
 
 struct _s_stack {
     stack_elem elem;
-    stack next;
+    nodos next;
+};
+
+struct _size_stack {
+    nodos stack;
+    unsigned int length;
 };
  
 // El primer elem en el primer nodo va a ser el largo de la pila.
 
 static bool invrep(stack s) {
-    return (s->next == NULL && s->elem == 0);
+    return (s->stack != NULL && s->length == 0);
 }
 
 stack stack_empty() {
-    stack nodo= malloc(sizeof(struct _s_stack));
-    nodo->elem = 0; // stack vacio
-    nodo->next = NULL;
+    stack s = malloc(sizeof(struct _size_stack));
+    s->stack = NULL;
+    s->length = 0u;
 
-    return nodo;
+    return s;
 }
 
 stack stack_push(stack s, stack_elem e) {
-    stack res = malloc(sizeof(struct _s_stack));
+    nodos new_nodo = malloc(sizeof(struct _s_stack));
     
-    if (res == NULL)
+    if (new_nodo == NULL)
     {
         printf("Error al resevar memoria \n");
         exit(EXIT_FAILURE);
     }
 
-    res->elem = e;
-    res->next = s->next; // seria el primer elemento del stack
-    s->elem++; // incrementa el tamano del stack
-    s->next = res; // apunta al nuevo nodo
+    new_nodo->elem = e;
+    new_nodo->next = s->stack;
+    
+    s->stack = new_nodo;
+    s->length++;
 
     return s;
 }
@@ -42,33 +48,36 @@ stack stack_push(stack s, stack_elem e) {
 stack stack_pop(stack s) {
     assert(!invrep(s));
 
-	stack res = s->next;
-	s = (s->next)->next;
-    s->elem--;
-	free(res);
-	res = NULL;	
+    nodos aux_nodo = s->stack;
+    s->stack = s->stack->next;
+    
+    aux_nodo->next = NULL;
+    free(aux_nodo);
+    aux_nodo = NULL;
+
+    s->length--;
 
 	return s;
 }
 
 unsigned int stack_size(stack s) {
     
-    return s->elem;
+    return s->length;
 }
 
 stack_elem stack_top(stack s) {
     assert(!invrep(s));
 
-    return (s->next)->elem;
+    return (s->stack)->elem;
 }
 
 bool stack_is_empty(stack s) {
     
-    return (s == NULL);
+    return (s->stack == NULL && s->length == 0);
 }
 
 stack_elem *stack_to_array(stack s) {
-    stack aux = s->next;
+    nodos aux_nodo = s->stack;
     stack_elem *res = NULL;
     unsigned int length = stack_size(s);
 
@@ -77,8 +86,8 @@ stack_elem *stack_to_array(stack s) {
         res = calloc(length, sizeof(stack_elem));
         for (unsigned int i = 0; i < length; i++)
         {
-            res[length-i-1] = aux->elem;
-            aux = aux->next;
+            res[length-i-1] = aux_nodo->elem;
+            aux_nodo = aux_nodo->next;
         }
     }
     
@@ -86,12 +95,18 @@ stack_elem *stack_to_array(stack s) {
 }
 
 stack stack_destroy(stack s) {
+    nodos aux_nodo = s->stack;
+    nodos aux2_nodo = NULL;
+    
+    free(s);
+    s = NULL;
 
-    while (s != NULL) {
-        stack aux = s->next;
-        free(s);
-        s = aux;
+
+    while (aux_nodo != NULL) {
+        aux2_nodo = aux_nodo->next;
+        free(aux_nodo);
+        aux_nodo = aux2_nodo;
     }
 
-  return NULL;
+    return s;
 }

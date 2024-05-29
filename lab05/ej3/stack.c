@@ -4,6 +4,7 @@
 #include "stack.h"
 
 #define CAPACITY_INIT 10
+
 struct _s_stack {
     stack_elem *elems;      // Arreglo de elementos
     unsigned int size;      // Cantidad de elementos en la pila
@@ -54,7 +55,7 @@ unsigned int stack_size(stack s){
 
 stack_elem stack_top(stack s) {
     assert(invrep(s));
-    stack_elem res = s->elems[s->size];
+    stack_elem res = s->elems[s->size-1];
 
     return res;
 }
@@ -66,7 +67,17 @@ bool stack_is_empty(stack s) {
 }
 
 stack_elem *stack_to_array(stack s) {
-    stack_elem *res = s->elems;
+    stack_elem *res = NULL;
+
+    if (s->size != 0)
+    {
+        res = calloc(s->size, sizeof(stack_elem));
+
+        for (unsigned int i = 0; i < s->size; i++)
+        {
+            res[i] = s->elems[i];    
+        }
+    }
 
     return res;
 }
@@ -74,6 +85,8 @@ stack_elem *stack_to_array(stack s) {
 
 stack stack_destroy(stack s) {
     assert(invrep(s));
+    free(s->elems);
+    s->elems = NULL;
     free(s);
     s = NULL;
 
