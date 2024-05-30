@@ -5,6 +5,8 @@
 
 typedef struct s_pqueue * pqueue;
 
+typedef struct s_node * node;
+
 typedef unsigned int pqueue_elem;
 
 typedef unsigned int priority_t;
