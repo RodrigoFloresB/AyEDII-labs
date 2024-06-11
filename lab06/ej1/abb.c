@@ -27,9 +27,7 @@ static bool invrep(abb tree) {
 
 abb abb_empty(void) {
     abb tree;
-    /*
-     * Needs implementation
-     */
+    tree = NULL;
     assert(invrep(tree) && abb_is_empty(tree));
     return tree;
 }
@@ -46,9 +44,7 @@ abb abb_add(abb tree, abb_elem e) {
 bool abb_is_empty(abb tree) {
     bool is_empty=false;
     assert(invrep(tree));
-    /*
-     * Needs implementation
-     */
+    is_empty = (tree == NULL);
     return is_empty;
 }
 

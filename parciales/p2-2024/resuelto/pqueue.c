@@ -94,7 +94,7 @@ pqueue pqueue_enqueue(pqueue q, Character character) {
   } else if (q->first != NULL && q->first->priority < new_node->priority) { // new_node tiene mas prioridad que todos
     new_node->next = q->first;
     q->first = new_node;
-  } else {
+  } else if (q->first != NULL && q->first->priority >= new_node->priority) {
     aux = q->first;
     aux_before = aux;
     while (aux != NULL && !found)
@@ -103,16 +103,22 @@ pqueue pqueue_enqueue(pqueue q, Character character) {
       {
         aux_before = aux;
         aux = aux->next;
-      } else {
+      } else if (aux->priority < new_node->priority) {
         found = true;
         new_node->next = aux;
         aux_before->next = new_node;
+      } 
+
+      if (aux == NULL && !found)
+      {
+        aux_before->next = new_node;
+        found = true;
       }
     }
   }
 
   q->size += 1;
-
+  
   return q;
 }
 
@@ -195,56 +201,48 @@ pqueue pqueue_copy(pqueue q) {
 /* ============================================================================
 DESTROY!
 ============================================================================ */
-static struct s_node *destroy_node(struct s_node *node) {
-  assert(node != NULL);
-  if (node != NULL)
+static struct s_node *destroy_node(struct s_node *n) {
+  assert(n != NULL);
+  node p = n;
+
+  while (p->next != NULL)
   {
-    free(node);
-    node = NULL;
+    p = p->next;
+    free(n);
+    n = p;
   }
   
-  assert(node == NULL);
-  return node;
+  free(p);
+
+  n = NULL;
+  p = NULL;
+
+  assert(n == NULL);
+  return n;
 }
 
 pqueue pqueue_dequeue(pqueue q) {
-  assert(invrep(q));
+  assert(invrep(q) && !pqueue_is_empty(q));
   node aux = q->first;
-
-  if (q->first != NULL)
-  {
-    q->first = aux->next;
-    aux->next = NULL;
-    destroy_node(aux);
-  }
-  
-  aux = NULL;
-
+  q->first = q->first->next;
+  aux->next = NULL;
+  aux = destroy_node(aux);
   q->size -= 1;
 
+  assert(invrep(q));
   return q;
 }
 
 pqueue pqueue_destroy(pqueue q) {
+  assert(invrep(q));
 
-  node aux = q->first;
-
-  if (q != NULL)
+  if (q->first != NULL)
   {
-    if (q->first != NULL)
-    {
-      while (aux != NULL)
-      {
-        aux = aux->next;
-        free(q->first);
-        q->first = aux; 
-      }
-      
-    }
-
-    free(q);
-    q = NULL;
+    destroy_node(q->first);
   }
+  
+  free(q);
+  q = NULL;
   
   assert(q == NULL);
   return q;

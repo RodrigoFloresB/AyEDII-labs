@@ -195,7 +195,7 @@ unsigned int character_read(FILE *file, void *where, ProcessCharacter process) {
 
     // send the data to the provided processor
     process(where, character);
-
+    
     // one more record
     readed++;
   }
